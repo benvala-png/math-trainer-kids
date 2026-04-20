@@ -1,72 +1,319 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Math Trainer Kids</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Entraîneur Maths 🧮</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
+        * {
             margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             padding: 10px;
         }
-        h1 {
-            font-size: 2.5em;
+        
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            padding: 20px;
+            max-width: 500px;
+            width: 100%;
+            text-align: center;
         }
+        
+        .title {
+            font-size: 2em;
+            color: #667eea;
+            margin-bottom: 15px;
+        }
+        
         .stars-display {
+            font-size: 2.5em;
+            margin: 15px 0;
             display: flex;
             justify-content: center;
-            margin: 20px 0;
+            gap: 8px;
+            flex-wrap: wrap;
+            min-height: 50px;
         }
+        
         .star {
-            font-size: 2em;
-            margin: 0 5px;
-            color: gold;
-            opacity: 0;
-            transform: translateY(-10px);
-            animation: appear 0.5s forwards;
+            animation: starPop 0.6s ease-out;
         }
-        @keyframes appear {
-            from { opacity: 0; transform: translateY(-10px); }
-            to { opacity: 1; transform: translateY(0); }
+        
+        @keyframes starPop {
+            0% { transform: scale(0); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
         }
+        
+        .level-display {
+            font-size: 1.1em;
+            color: #764ba2;
+            margin-bottom: 10px;
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 12px;
+            background: #e0e0e0;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 10px;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+        
+        .score {
+            font-size: 0.9em;
+            color: #666;
+            margin-bottom: 15px;
+        }
+        
+        .question {
+            font-size: 2.5em;
+            color: #333;
+            margin: 25px 0;
+            font-weight: bold;
+        }
+        
+        .input-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        
+        input[type="number"] {
+            flex: 1;
+            padding: 15px;
+            font-size: 1.5em;
+            border: 3px solid #667eea;
+            border-radius: 10px;
+            text-align: center;
+        }
+        
+        input[type="number"]:focus {
+            outline: none;
+            border-color: #764ba2;
+            box-shadow: 0 0 10px rgba(118, 75, 162, 0.3);
+        }
+        
+        button {
+            padding: 15px 20px;
+            font-size: 1.2em;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: bold;
+            min-height: 50px;
+        }
+        
+        button:active {
+            transform: scale(0.98);
+        }
+        
+        .feedback {
+            font-size: 1.3em;
+            margin: 15px 0;
+            min-height: 40px;
+            font-weight: bold;
+        }
+        
+        .feedback.correct {
+            color: #4caf50;
+        }
+        
+        .feedback.incorrect {
+            color: #f44336;
+        }
+        
+        .emoji-celebration {
+            font-size: 3em;
+            animation: bounce 0.6s ease-in-out;
+        }
+        
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+        
+        .difficulty-info {
+            font-size: 0.85em;
+            color: #999;
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid #eee;
+        }
+        
+        .level-badge {
+            display: inline-block;
+            background: #667eea;
+            color: white;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 0.9em;
+            margin-left: 5px;
+        }
+        
+        .restart-btn {
+            background: #f44336;
+            margin-top: 15px;
+            width: 100%;
+        }
+        
+        .star-popup {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+            text-align: center;
+            z-index: 2000;
+            animation: popIn 0.5s ease-out;
+        }
+        
+        @keyframes popIn {
+            0% { transform: translate(-50%, -50%) scale(0); }
+            100% { transform: translate(-50%, -50%) scale(1); }
+        }
+        
+        .star-popup .emoji {
+            font-size: 4em;
+            margin-bottom: 10px;
+            animation: spin 0.8s linear;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .star-popup p {
+            font-size: 1.3em;
+            color: #333;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+        
         @media (max-width: 600px) {
-            body {
-                padding: 10px;
+            .container {
+                padding: 15px;
+                border-radius: 15px;
             }
-            h1 {
+            
+            .title {
+                font-size: 1.6em;
+            }
+            
+            .question {
+                font-size: 2em;
+                margin: 20px 0;
+            }
+            
+            input[type="number"] {
+                font-size: 1.3em;
+                padding: 12px;
+            }
+            
+            button {
+                font-size: 1.1em;
+                padding: 12px 15px;
+                min-height: 45px;
+            }
+            
+            .feedback {
+                font-size: 1.1em;
+            }
+            
+            .stars-display {
                 font-size: 2em;
             }
-            .touch-target {
-                padding: 20px;
-                font-size: 1.5em;
+        }
+        
+        @media (max-width: 400px) {
+            .container {
+                padding: 10px;
+            }
+            
+            .title {
+                font-size: 1.4em;
+            }
+            
+            .question {
+                font-size: 1.8em;
+                margin: 15px 0;
+            }
+            
+            .input-group {
+                gap: 5px;
+            }
+            
+            input[type="number"] {
+                font-size: 1.1em;
+                padding: 10px;
+            }
+            
+            button {
+                font-size: 1em;
+                padding: 10px 12px;
+                min-height: 40px;
             }
         }
     </style>
 </head>
 <body>
-    <h1>Math Trainer for Kids</h1>
-    <div class="stars-display" id="starsDisplay"></div>
-    <button class="touch-target" onclick="earnStar()">Earn Star</button>
-    <script>
-        let stars = 0;
-        const starsDisplay = document.getElementById('starsDisplay');
-
-        function earnStar() {
-            stars++;
-            updateStarsDisplay();
-        }
-
-        function updateStarsDisplay() {
-            starsDisplay.innerHTML = '';
-            for (let i = 0; i < stars; i++) {
-                const star = document.createElement('span');
-                star.className = 'star';
-                star.innerHTML = '★';
-                star.style.animationDelay = `${i * 0.2}s`;
-                starsDisplay.appendChild(star);
-            }
-        }
-    </script>
+    <div class="container">
+        <div class="title">🧮 Entraîneur Maths</div>
+        
+        <div class="stars-display" id="starsDisplay"></div>
+        
+        <div class="level-display">
+            Niveau <span id="level">1</span>
+            <span class="level-badge" id="difficulty"></span>
+        </div>
+        <div class="progress-bar">
+            <div class="progress-fill" id="progressFill"></div>
+        </div>
+        <div class="score">
+            ✅ <span id="correct">0</span> | ❌ <span id="errors">0</span> | ⭐ <span id="stars">0</span>
+        </div>
+        
+        <div class="question" id="question">12 + 5 = ?</div>
+        
+        <div class="input-group">
+            <input type="number" id="answer" placeholder="Réponse" autofocus>
+            <button onclick="checkAnswer()">Vérifier</button>
+        </div>
+        
+        <div class="feedback" id="feedback"></div>
+        
+        <div class="difficulty-info">
+            <p id="difficultyText">Commence par des calculs faciles! 😊</p>
+        </div>
+        
+        <button class="restart-btn" onclick="restartGame()">Recommencer</button>
+    </div>
+    
+    <script src="app.js"></script>
 </body>
 </html>
